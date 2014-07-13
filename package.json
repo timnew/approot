@@ -1,5 +1,5 @@
 {
-  "name": "app-root",
+  "name": "approot",
   "version": "0.1.0",
   "description": "A helper class to build file path. Useful in application, to provide path reference to whole app",
   "main": "index.js",
@@ -12,8 +12,13 @@
   },
   "keywords": [
     "path",
+    "app",
+    "root",
+    "require",
+    "folder",
     "helper",
-    "express"
+    "express",
+    "approot"
   ],
   "author": "timnew <timnew.wti@gmail.com> (https://timnew.github.io/)",
   "license": "MIT",

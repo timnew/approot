@@ -2,7 +2,7 @@ require('./spec_helper')
 
 path = require('path')
 
-describe "app-root", ->
+describe "approot", ->
   createAppRoot = ->
     require('../index')(__dirname)
   
