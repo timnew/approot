@@ -39,17 +39,17 @@ global.appRoot = require('approot')(__dirname).consolidate();
 
 global.configuration = require(appRoot.config('configuration'));
 
-global.Services = lazy appRoot.services();
-global.Routes = lazy appRoot.routes();
-global.Records = lazy appRoot.records();
-global.Models = lazy appRoot.models();
-global.Entities = lazy appRoot.entities();
+global.Services = lazy appRoot.services;
+global.Routes = lazy appRoot.routes;
+global.Records = lazy appRoot.records;
+global.Models = lazy appRoot.models;
+global.Entities = lazy appRoot.entities;
 
 // Reference as
 
 var user = new Models.User();
 
-Routers.admin.login.get(req, res);
+app.get('/admin/login', Routers.admin.login.get);
 
 ```
 
