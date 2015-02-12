@@ -37,7 +37,7 @@ gulp.task 'build', ['clean', 'coffee', 'mocha']
 
 gulp.task 'default', ['build']
 
-gulp.task 'bump', ['build'] ->
+gulp.task 'bump', ['build'], ->
   gulp.src paths.source.manifest
   .pipe bump { type: argv.bump }
   .pipe gulp.dest(paths.dest.root)
