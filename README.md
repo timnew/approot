@@ -26,7 +26,10 @@ approot.models()                  // return /var/application/models, exists afte
 approot.models('user.js')         // return /var/application/models/user.js
 
 // equivalent to call approot.consolidate().data.consolidate().important.consolidate()
-approot.consolidate('data', 'important') 
+approot.consolidate('data', 'important')
+
+approot.listChildren()                  // list all files and folders in current folder
+approot.listChildren('sub', 'grandsub') // list all files and folders in './sub/grandsub'
 
 ```
 
@@ -53,7 +56,6 @@ var user = new User();
 var user2 = new Models.User();
 
 app.get('/admin/login', Routers.admin.login.get);
-
 
 ```
 
