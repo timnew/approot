@@ -3,9 +3,11 @@ require('./spec_helper')
 path = require('path')
 
 describe "approot", ->
+  AppRoot = require('../index')
+
   createAppRoot = ->
-    require('../index')(__dirname)
-  
+    AppRoot(__dirname)
+
   appRoot = createAppRoot()
 
   it "should expand Path root path", ->
@@ -23,16 +25,16 @@ describe "approot", ->
       appRoot = createAppRoot()
       consolidated = appRoot.consolidate()
       consolidated.should.equal appRoot
-      
+
       appRoot.fixtures().should.equal appRoot('fixtures')
       appRoot.fixtures('file').should.equal appRoot('fixtures', 'file')
-    
+
     it 'should contain all members', ->
       appRoot = createAppRoot()
       fixtures = appRoot.consolidate().fixtures.consolidate()
 
       expect(fixtures.folder).to.be.a 'function'
-      expect(fixtures.file).to.be.a 'function'      
+      expect(fixtures.file).to.be.a 'function'
 
     describe 'consolidate through path', ->
       it 'consolidate through path', ->
@@ -43,7 +45,7 @@ describe "approot", ->
 
       it 'should yield null when path not exists', ->
         appRoot = createAppRoot()
-        
+
         folder = appRoot.consolidate('fixtures', 'not exist')
 
         expect(folder).to.be.null
@@ -55,3 +57,15 @@ describe "approot", ->
   describe 'folder consolidate', ->
     describe 'appRoot.consolidate(2)', ->
     describe 'appRoot.consolidate(true, 2)', ->
+
+  describe 'listChildren', ->
+    it 'should list children', ->
+      expect(appRoot.listChildren()).to.have.members ['fixtures', 'rootPath.spec.coffee', 'spec_helper.js']
+
+    it 'should list children for subfolder', ->
+      expect(appRoot.listChildren('fixtures')).to.have.members ['folder', 'file']
+
+    it 'should return null if path not exists', ->
+      appRoot = AppRoot('/path/not/exists')
+      expect(appRoot.listChildren()).to.be.null
+      expect(appRoot.listChildren('a')).to.be.null

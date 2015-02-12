@@ -18,16 +18,24 @@ consolidate = (args...)->
         return first.consolidate.apply(first, args)
       else
         return null
-  this  
+  this
 
+listChildren = (args...) ->
+  args.unshift(this())
+  path = pathUtil.join.apply(pathUtil, args)
+
+  return null unless fs.existsSync(path)
+
+  fs.readdirSync(path)
 
 approot = (rootPath) ->
   path = pathUtil.resolve rootPath
 
   rootpath = (args...) ->
     pathUtil.resolve path, pathUtil.join.apply(null, args)
-    
+
   rootpath.consolidate = consolidate
+  rootpath.listChildren = listChildren
 
   rootpath
 
