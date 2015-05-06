@@ -2,22 +2,30 @@ require('./spec_helper')
 
 path = require('path')
 
-describe "approot", ->
+describe 'approot', ->
   AppRoot = require('../index')
 
   createAppRoot = ->
     AppRoot(__dirname)
 
   appRoot = createAppRoot()
+  
+  describe 'factory', ->
+    it 'should set root path', ->
+      appRoot = AppRoot(__dirname)
 
-  it "should expand Path root path", ->
-    appRoot().should.equal __dirname
+      appRoot().should.equal __dirname
 
-  it "should expand file paths", ->
+    it 'should resolve path', ->
+      appRoot = AppRoot(__dirname, 'fixtures/folder/..')
+      
+      appRoot().should.equal path.join(__dirname, 'fixtures')
+    
+  it 'should expand file paths', ->
     appRoot('file').should.equal path.join(__dirname, 'file')
     appRoot('file.ext').should.equal path.join(__dirname, 'file.ext')
 
-  it "should expand multiple path", ->
+  it 'should expand multiple path', ->
     appRoot('folder', 'file').should.equal path.join(__dirname, 'folder', 'file')
 
   describe 'consolidate', ->

@@ -28,8 +28,8 @@ listChildren = (args...) ->
 
   fs.readdirSync(path)
 
-approot = (rootPath) ->
-  path = pathUtil.resolve rootPath
+approot = (rootPath...) -> 
+  path = pathUtil.resolve.apply pathUtil, rootPath
 
   rootpath = (args...) ->
     pathUtil.resolve path, pathUtil.join.apply(null, args)
