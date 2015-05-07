@@ -1,7 +1,7 @@
 approot [![NPM version][npm-image]][npm-url] [![Build Status][ci-image]][ci-url] [![Dependency Status][depstat-image]][depstat-url]
 ================
 
-> An utility to build path based on a base path. Useful in node.js application, such as web app server. 
+> An utility to build path based on a base path. Useful in node.js application, such as web app server.
 > Recommend to instantiate an `approot` in global namespace, to provide an specific reference path across all files in the project
 
 ## Install
@@ -12,33 +12,100 @@ Install using [npm][npm-url].
 
 ## Usage
 
-```javascript 
+Suppose the code is located in `/var/application`
+```javascript
+// build approot based on __dirname, and __dirname is /var/application
+var approot = require('approot')(__dirname);
 
-// suppose __dirname is /var/application
+```
 
-// build approot based on __dirname
-global.approot = require('approot')(__dirname).consolidate();
-// put approot in global to share it across files in the app
+**HINT:** It is recommended to expose `approot` in global, which will be helpful to share the path across the whole javascript files.
+```javascript
+global.approot = require('approot')(__dirname);
+```
 
+### Basic Usage
+
+```javascript
 approot()                         // return /var/application
-approot('data', 'sample.json')    // return /var/application/data/sample.json
+approot('models')                 // return /var/application/models
+approot('models', 'user.js')      // return /var/application/models/user.js
+
+```
+### Consolidate
+
+`consolidate` can inject sub-directories automatically, which is still a `approot` function.
+
+```javascript
+approot.consolidate();            // Scan then inject all subdirectories automatically
 approot.models()                  // return /var/application/models, exists after consolidate is called
 approot.models('user.js')         // return /var/application/models/user.js
 
-// equivalent to call approot.consolidate().data.consolidate().important.consolidate()
-approot.consolidate('data', 'important')
+```
 
+**HINT:** since `consolidate` method return the `approot` itself, so you can use in this way:
+
+```javascript
+var approot = require('approot')(__dirname).consolidate();
+```
+
+### Consolidate with arguments
+`consolidate` with arguments will extend generate `approot` instance as argument **regardeless** the file system.
+Due to this nature, it can be used in browser environment.
+
+```javascript
+var rootPath = '/'
+var approot;
+
+approot = require('approot')(rootPath);
+approot()                         // return '/'
+
+approot = require('approot')(rootPath).consolidate('models');
+approot.models()                  // return '/models'
+
+approot = require('approot')(rootPath).consolidate(['models', 'routes']);
+approot.models()                  // return '/models'
+approot.routes()                  // return '/routes'
+
+approot = require('approot')(rootPath).consolidate({models: true, routes: 'admin', assets: ['js', 'css'], config: { credential: 'secret' }});
+approot.models()                  // return '/models'
+approot.routes()                  // return '/routes'
+approot.routes.admin()            // return '/routes/admin'
+approot.assets()                  // return '/routes/assets'
+approot.assets.js()               // return '/routes/assets/js'
+approot.assets.css()              // return '/routes/assets/css'
+approot.config()                  // return '/routes/config'
+approot.config.credential()       // return '/routes/config/credential'
+approot.config.credential.secret()// return '/routes/config/credential/secret'
+```
+
+### List Children
+
+```javascript
 approot.listChildren()                  // list all files and folders in current folder
 approot.listChildren('sub', 'grandsub') // list all files and folders in './sub/grandsub'
 
 ```
 
-When used in conjunction of [lazily-require](https://github.com/timnew/lazily-require) to initialize the application environment.
+### Browser Support
+
+`approot` can be used in bowser with the help of [Browserify] or [Webpack]. But there are some limitations due to lack of `fs` API support.
+
+When used in browser, `approot` cannot scan file system automatically, so the API behavior changes in following circumstances:
+
+* Use `consolidate` **without arguments** does not scan the file system automatically, it just return itself. Use `consolidate` with **arguments** instead.
+* `listChildren` **always** returns a empty array
+
+## Used with [lazily-require]
+
+When used in conjunction of [lazily-require] to initialize the application environment.
 
 ```javascript
+// initEnv.js
 var lazy = require('lazily-require');
 
-global.appRoot = require('approot')(__dirname).consolidate();
+// suppose __dirname is /var/application
+global.appRoot = require('approot')(__dirname).consolidate(); // expose the approot to global and consolidate first-layer directories
 
 global.configuration = require(appRoot.config('configuration'));
 
@@ -48,15 +115,8 @@ global.Records = lazy appRoot.records();
 global.Models = lazy appRoot.models();
 global.Entities = lazy appRoot.entities();
 
-// Reference as
-
-var user = Models.User;
-var user = new User();
-
-var user2 = new Models.User();
-
-app.get('/admin/login', Routers.admin.login.get);
-
+// a differnt javascript file
+var User = Models.User; // var User = require('/var/application/models/User');
 ```
 
 ## License
@@ -75,3 +135,7 @@ MIT
 
 [depstat-url]: https://gemnasium.com/timnew/approot
 [depstat-image]: http://img.shields.io/gemnasium/timnew/approot.svg?style=flat
+
+[lazily-require]: https://github.com/timnew/lazily-require
+[Browserify]: http://browserify.org/
+[Webpack]: http://webpack.github.io/

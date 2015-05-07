@@ -3,6 +3,9 @@
   "version": "0.1.2",
   "description": "A helper class to build file path. Useful in application, to provide path reference to whole app",
   "main": "index.js",
+  "browser": {
+    "fs": false
+  }
   "scripts": {
     "test": "./node_modules/.bin/gulp mocha"
   },
