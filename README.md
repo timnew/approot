@@ -87,6 +87,15 @@ approot.listChildren('sub', 'grandsub') // list all files and folders in './sub/
 
 ```
 
+### Relative Require
+
+`require` method is a syntactic sugar that make `require` a little bit easier
+
+```javascript
+// suppose approot is create somewhere before
+var User = approot.models.require('user'); // Equivalent to "require(approot.models('user'))"
+```
+
 ### Browser Support
 
 `approot` can be used in bowser with the help of [Browserify] or [Webpack]. But there are some limitations due to lack of `fs` API support.
