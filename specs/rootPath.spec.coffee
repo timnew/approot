@@ -98,3 +98,9 @@ describe 'appRoot', ->
       appRoot = AppRoot('/path/not/exists')
       expect(appRoot.listChildren()).to.deep.equal []
       expect(appRoot.listChildren('a')).to.deep.equal []
+  describe 'relative require', ->
+    it 'should require', ->
+      appRoot = createAppRoot().consolidate(2)
+
+      appRoot.fixtures.require('folder', 'test.js').should.equal 'test'
+      appRoot.fixtures.folder.require('test.js').should.equal 'test'

@@ -15,8 +15,13 @@ approot = (rootPath...) ->
 
   rootpath.consolidate = consolidate
   rootpath.listChildren = listChildren
+  rootpath.require = relativeRequire
 
   rootpath
+
+relativeRequire = (args...) ->
+  path = this.apply(this, args)
+  require(path)
 
 categorizeArg = (arg) ->
   return 'null' unless arg?
